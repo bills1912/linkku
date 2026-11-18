@@ -15,7 +15,8 @@ const { renderProfile, renderNotFound } = require('./lib/render');
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || db.state.meta.secret;
 const REG_CODE = process.env.REGISTRATION_CODE || '';   // kosong = pendaftaran bebas
-const PUBLIC_URL = (process.env.PUBLIC_URL || (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : '')).replace(/\/$/, '');
+// Kosongkan agar alamat selalu mengikuti domain yang sedang diakses (disarankan di Railway).
+const PUBLIC_URL = (process.env.PUBLIC_URL || '').replace(/\/$/, '');
 const RESERVED = new Set(['admin', 'api', 'login', 'register', 'go', 'uploads', 'static', 'qr', 'logout', 'dashboard', 'settings', 'favicon.ico', 'robots.txt']);
 
 const app = express();
@@ -32,7 +33,12 @@ app.use('/uploads', express.static(db.UPLOAD_DIR, { maxAge: '7d' }));
 // ---------- util ----------
 const uid = () => crypto.randomBytes(6).toString('hex');
 const now = () => Date.now();
-const origin = (req) => PUBLIC_URL || `${req.protocol}://${req.get('host')}`;
+// Domain diambil dari permintaan yang masuk (lewat proxy Railway), jadi selalu sesuai domain aktif.
+const origin = (req) => {
+  if (PUBLIC_URL) return PUBLIC_URL;
+  const host = (req.get('x-forwarded-host') || req.get('host') || '').split(',')[0].trim();
+  return `${req.protocol}://${host}`;
+};
 const str = (v, max = 200) => String(v ?? '').slice(0, max).trim();
 const isColor = (c) => /^#[0-9a-fA-F]{3,8}$/.test(String(c || ''));
 const validUsername = (u) => /^[a-z0-9._-]{3,30}$/.test(u) && !RESERVED.has(u);
@@ -459,6 +465,7 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Linkku berjalan di port ${PORT}${PUBLIC_URL ? ` — ${PUBLIC_URL}` : ''}`);
+  if (process.env.RAILWAY_PUBLIC_DOMAIN) console.log(`Domain Railway: https://${process.env.RAILWAY_PUBLIC_DOMAIN}`);
   console.log(`Folder data: ${db.DATA_DIR}`);
   if (process.env.RAILWAY_ENVIRONMENT && !process.env.RAILWAY_VOLUME_MOUNT_PATH && !process.env.DATA_DIR) {
     console.warn('⚠️  PERINGATAN: Volume Railway belum dipasang — data akan HILANG setiap deploy ulang. Pasang Volume dengan mount path /data.');
