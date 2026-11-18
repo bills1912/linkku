@@ -165,3 +165,11 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14px}
 .empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
 .empty-state .big{font-size:44px}
 [hidden]{display:none!important}
+
+/* tampilkan/sembunyikan kata sandi */
+.pw-wrap{position:relative;width:100%}
+.pw-wrap .inp{padding-right:50px}
+.pw-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:38px;height:38px;border:0;border-radius:10px;background:transparent;color:#777;cursor:pointer;display:grid;place-items:center;transition:background .15s,color .15s}
+.pw-eye:hover{background:rgba(0,0,0,.06);color:#111}
+.pw-eye:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.pw-eye[aria-pressed=true]{color:var(--accent)}

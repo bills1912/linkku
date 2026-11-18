@@ -41,7 +41,7 @@ async function copy(text) {
 function confirmBox({ title, text, yes = 'Hapus', password = false }) {
   return new Promise((resolve) => {
     $('#cfTitle').textContent = title; $('#cfText').textContent = text || ''; $('#cfYes').textContent = yes;
-    const inp = $('#cfInput'); inp.hidden = !password; inp.value = '';
+    const inp = $('#cfInput'); (inp.closest('.pw-wrap') || inp).hidden = !password; inp.value = ''; inp.pwHide?.();
     $('#confirmModal').hidden = false;
     if (password) setTimeout(() => inp.focus(), 50);
     const done = (v) => { $('#confirmModal').hidden = true; $('#cfYes').onclick = $('#cfNo').onclick = null; resolve(v); };
@@ -463,7 +463,7 @@ function setupSettings() {
   $('#saveEmail').onclick = async () => { me = await api('/api/me/account', { method: 'PUT', body: { email: $('#sEmail').value } }); renderHeader(); toast('✓ Email diperbarui'); };
   $('#savePw').onclick = async () => {
     await api('/api/me/password', { method: 'PUT', body: { current: $('#pwCur').value, next: $('#pwNew').value } });
-    $('#pwCur').value = $('#pwNew').value = ''; toast('✓ Kata sandi diperbarui');
+    $('#pwCur').value = $('#pwNew').value = ''; $('#pwCur').pwHide?.(); $('#pwNew').pwHide?.(); toast('✓ Kata sandi diperbarui');
   };
   const saveSeo = debounce(async () => { me.settings = await api('/api/me/settings', { method: 'PUT', body: { seoTitle: $('#seoTitle').value, seoDesc: $('#seoDesc').value } }); saved(); }, 600);
   $('#seoTitle').addEventListener('input', saveSeo);
