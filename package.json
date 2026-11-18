@@ -1,0 +1,24 @@
+{
+  "name": "linkku",
+  "version": "1.0.0",
+  "description": "Linkku — aplikasi link-in-bio internal (mirip Linktree)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.5.2",
+    "bcryptjs": "^2.4.3",
+    "chart.js": "^4.4.1",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "qrcode": "^1.5.3",
+    "sortablejs": "^1.15.2"
+  }
+}

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Linkku — Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/vendor/fa/css/all.min.css">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">⚡ Linkku</div>
+  <nav class="navtabs" id="tabs">
+    <button class="on" data-tab="links"><i class="fa-solid fa-link"></i> Tautan</button>
+    <button data-tab="appearance"><i class="fa-solid fa-palette"></i> Tampilan</button>
+    <button data-tab="analytics"><i class="fa-solid fa-chart-line"></i> Analitik</button>
+    <button data-tab="settings"><i class="fa-solid fa-gear"></i> Pengaturan</button>
+  </nav>
+  <div class="sp"></div>
+  <button class="btn" id="btnShare"><i class="fa-solid fa-arrow-up-from-bracket"></i> <span>Bagikan</span></button>
+  <div class="menu">
+    <button class="avatar-sm" id="btnMenu"></button>
+    <div class="menu-pop" id="menuPop">
+      <div class="who" id="who"></div>
+      <a id="mView" target="_blank"><i class="fa-solid fa-up-right-from-square"></i> Lihat halaman saya</a>
+      <button data-goto="settings"><i class="fa-solid fa-user-gear"></i> Akun</button>
+      <button id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <main class="editor">
+    <!-- ================= TAUTAN ================= -->
+    <section data-pane="links">
+      <div class="urlbar">
+        <i class="fa-solid fa-circle" style="color:#16a34a;font-size:9px"></i>
+        <div class="u"><small>Halamanmu aktif:</small> <a id="myUrl" target="_blank" style="color:inherit"></a></div>
+        <button class="btn" id="copyUrl"><i class="fa-regular fa-copy"></i> Salin URL</button>
+      </div>
+
+      <button class="btn primary lg block" id="btnAdd"><i class="fa-solid fa-plus"></i> Tambah tautan</button>
+      <div class="addbox" id="addBox" hidden style="margin-top:12px">
+        <h4>Masukkan URL <button class="btn ghost" id="addClose" aria-label="Tutup">✕</button></h4>
+        <form class="addrow" id="addForm">
+          <input class="inp" name="url" placeholder="https://..." autocomplete="off" required>
+          <button class="btn dark">Tambah</button>
+        </form>
+        <div class="muted" style="margin-top:10px">Judul akan diisi otomatis — kamu bisa mengubahnya kapan saja.</div>
+      </div>
+      <div class="actions-row">
+        <button class="btn" id="btnHeader"><i class="fa-solid fa-heading"></i> Tambah header</button>
+        <button class="btn" id="btnArchiveToggle"><i class="fa-solid fa-eye-slash"></i> <span>Sembunyikan nonaktif</span></button>
+      </div>
+      <div id="linkList"></div>
+      <div class="empty-state" id="linkEmpty" hidden>
+        <div class="big">🔗</div>
+        <p><b>Belum ada tautan.</b><br>Tambahkan tautan pertamamu dengan tombol ungu di atas.</p>
+      </div>
+    </section>
+
+    <!-- ================= TAMPILAN ================= -->
+    <section data-pane="appearance" hidden>
+      <div class="sec-title">Profil</div>
+      <div class="card">
+        <div class="prof">
+          <div class="av" id="avPrev"></div>
+          <div class="btns">
+            <label class="btn primary"><i class="fa-solid fa-camera"></i> Pilih foto profil<input type="file" accept="image/*" id="avFile" hidden></label>
+            <button class="btn" id="avRemove">Hapus foto</button>
+          </div>
+        </div>
+        <label class="lbl">Judul profil</label>
+        <input class="inp" id="pName" maxlength="60" placeholder="Nama tampilan">
+        <label class="lbl">Bio</label>
+        <textarea class="inp" id="pBio" maxlength="160" placeholder="Ceritakan singkat tentang kamu / tim"></textarea>
+        <div class="counter"><span id="bioCount">0</span>/160</div>
+      </div>
+
+      <div class="sec-title">Ikon sosial</div>
+      <div class="card">
+        <p class="muted" style="margin-top:0">Tampilkan ikon kecil untuk akun sosial, email, atau nomor WhatsApp.</p>
+        <div id="socList"></div>
+        <div class="row" style="margin-top:10px">
+          <select class="inp" id="socType" style="max-width:220px"></select>
+          <button class="btn dark" id="socAdd"><i class="fa-solid fa-plus"></i> Tambah ikon</button>
+        </div>
+        <label class="lbl">Posisi ikon</label>
+        <div class="opts" style="max-width:300px">
+          <div class="opt" data-socpos="top">Atas</div>
+          <div class="opt" data-socpos="bottom">Bawah</div>
+        </div>
+      </div>
+
+      <div class="sec-title">Tema</div>
+      <div class="card"><div class="themes" id="themes"></div></div>
+
+      <div class="sec-title">Kustomisasi</div>
+      <div class="card">
+        <h3>Latar belakang</h3>
+        <div class="opts" id="bgTypes">
+          <div class="opt" data-bg="solid">Warna polos</div>
+          <div class="opt" data-bg="gradient">Gradien</div>
+          <div class="opt" data-bg="image">Gambar</div>
+        </div>
+        <div id="bgSolid">
+          <label class="lbl">Warna latar</label>
+          <div class="colorrow"><input type="color" data-color="bgColor"><input class="inp" data-hex="bgColor"></div>
+        </div>
+        <div id="bgGrad">
+          <div class="grid2">
+            <div><label class="lbl">Warna kedua</label><div class="colorrow"><input type="color" data-color="bgColor2"><input class="inp" data-hex="bgColor2"></div></div>
+            <div><label class="lbl">Arah gradien</label>
+              <select class="inp" id="gradDir">
+                <option value="to bottom">Atas → Bawah</option><option value="to top">Bawah → Atas</option>
+                <option value="to right">Kiri → Kanan</option><option value="to bottom right">Diagonal ↘</option><option value="to bottom left">Diagonal ↙</option>
+              </select></div>
+          </div>
+        </div>
+        <div id="bgImg">
+          <label class="lbl">Gambar latar</label>
+          <label class="btn"><i class="fa-solid fa-image"></i> Unggah gambar<input type="file" accept="image/*" id="bgFile" hidden></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Tombol</h3>
+        <div id="btnStyles"></div>
+        <div class="grid2">
+          <div><label class="lbl">Warna tombol</label><div class="colorrow"><input type="color" data-color="btnColor"><input class="inp" data-hex="btnColor"></div></div>
+          <div><label class="lbl">Warna teks tombol</label><div class="colorrow"><input type="color" data-color="btnTextColor"><input class="inp" data-hex="btnTextColor"></div></div>
+          <div id="shadowWrap"><label class="lbl">Warna bayangan</label><div class="colorrow"><input type="color" data-color="shadowColor"><input class="inp" data-hex="shadowColor"></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Font</h3>
+        <select class="inp" id="fontSel"></select>
+        <label class="lbl">Warna teks halaman</label>
+        <div class="colorrow"><input type="color" data-color="textColor"><input class="inp" data-hex="textColor"></div>
+      </div>
+    </section>
+
+    <!-- ================= ANALITIK ================= -->
+    <section data-pane="analytics" hidden>
+      <div class="row" style="justify-content:space-between;margin:6px 0 16px">
+        <div class="sec-title" style="margin:0">Analitik</div>
+        <select class="inp" id="anDays" style="width:auto">
+          <option value="7">7 hari terakhir</option><option value="30">30 hari terakhir</option><option value="90">90 hari terakhir</option><option value="365">1 tahun</option>
+        </select>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="k"><i class="fa-regular fa-eye"></i> Kunjungan</div><div class="v" id="sViews">0</div></div>
+        <div class="stat"><div class="k"><i class="fa-solid fa-user"></i> Pengunjung unik</div><div class="v" id="sUnique">0</div></div>
+        <div class="stat"><div class="k"><i class="fa-solid fa-arrow-pointer"></i> Klik</div><div class="v" id="sClicks">0</div></div>
+        <div class="stat"><div class="k"><i class="fa-solid fa-percent"></i> CTR</div><div class="v" id="sCtr">0%</div></div>
+      </div>
+      <div class="card"><h3>Aktivitas harian</h3><canvas id="chart" height="110"></canvas></div>
+      <div class="card"><h3>Klik per tautan</h3><table class="tbl" id="tLinks"></table></div>
+      <div class="grid2">
+        <div class="card"><h3>Perangkat</h3><table class="tbl" id="tDev"></table></div>
+        <div class="card"><h3>Sumber kunjungan</h3><table class="tbl" id="tRef"></table></div>
+      </div>
+    </section>
+
+    <!-- ================= PENGATURAN ================= -->
+    <section data-pane="settings" hidden>
+      <div class="sec-title">Akun</div>
+      <div class="card">
+        <label class="lbl">Username (alamat halaman)</label>
+        <div class="row"><input class="inp" id="sUser"><button class="btn dark" id="saveUser">Simpan</button></div>
+        <div class="muted" style="margin-top:6px">Mengubah username akan mengubah alamat halamanmu; tautan lama tidak lagi berlaku.</div>
+        <label class="lbl">Email</label>
+        <div class="row"><input class="inp" id="sEmail" type="email"><button class="btn dark" id="saveEmail">Simpan</button></div>
+      </div>
+      <div class="card">
+        <h3>Ganti kata sandi</h3>
+        <input class="inp" id="pwCur" type="password" placeholder="Kata sandi saat ini" style="margin-bottom:10px">
+        <input class="inp" id="pwNew" type="password" placeholder="Kata sandi baru (min. 6)" style="margin-bottom:10px">
+        <button class="btn dark" id="savePw">Perbarui kata sandi</button>
+      </div>
+      <div class="sec-title">SEO & privasi</div>
+      <div class="card">
+        <label class="lbl">Judul halaman (tab browser)</label>
+        <input class="inp" id="seoTitle" maxlength="70" placeholder="Default: nama tampilan">
+        <label class="lbl">Deskripsi (muncul saat dibagikan)</label>
+        <textarea class="inp" id="seoDesc" maxlength="160" placeholder="Default: bio"></textarea>
+        <div class="row" style="justify-content:space-between;margin-top:14px">
+          <div><b>Sembunyikan dari mesin pencari</b><div class="muted">Disarankan untuk halaman internal.</div></div>
+          <label class="switch"><input type="checkbox" id="noindex"><span></span></label>
+        </div>
+      </div>
+      <div class="sec-title" style="color:#dc2626">Zona berbahaya</div>
+      <div class="card">
+        <p class="muted" style="margin-top:0">Menghapus akun akan menghapus halaman, tautan, dan seluruh data analitik secara permanen.</p>
+        <button class="btn danger" id="btnDelAcc"><i class="fa-solid fa-trash"></i> Hapus akun</button>
+      </div>
+    </section>
+  </main>
+
+  <aside class="previewcol" id="previewCol">
+    <div class="phone"><iframe id="preview" title="Pratinjau"></iframe></div>
+  </aside>
+</div>
+<button class="btn dark prev-toggle" id="prevToggle"><i class="fa-solid fa-mobile-screen"></i> Pratinjau</button>
+
+<!-- modal bagikan -->
+<div class="modal" id="shareModal" hidden>
+  <div class="mcard">
+    <button class="x" data-close>✕</button>
+    <h3>Bagikan Linkku-mu</h3>
+    <p class="muted">Bagikan ke tim atau cetak QR code-nya.</p>
+    <img class="qrbig" id="qrImg" alt="QR">
+    <div class="urlbar" style="margin-bottom:12px"><div class="u" id="shUrl"></div><button class="btn" id="shCopy"><i class="fa-regular fa-copy"></i></button></div>
+    <div class="grid2">
+      <a class="btn" id="qrDl"><i class="fa-solid fa-download"></i> Unduh QR</a>
+      <a class="btn" id="shWa" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+      <a class="btn" id="shOpen" target="_blank"><i class="fa-solid fa-up-right-from-square"></i> Buka halaman</a>
+      <a class="btn" id="shMail"><i class="fa-solid fa-envelope"></i> Email</a>
+    </div>
+  </div>
+</div>
+
+<!-- modal konfirmasi -->
+<div class="modal" id="confirmModal" hidden>
+  <div class="mcard">
+    <h3 id="cfTitle">Yakin?</h3>
+    <p class="muted" id="cfText"></p>
+    <input class="inp" id="cfInput" type="password" placeholder="Kata sandi" hidden style="margin-bottom:12px">
+    <div class="row" style="justify-content:flex-end"><button class="btn" id="cfNo">Batal</button><button class="btn danger solid" id="cfYes">Hapus</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/vendor/sortable/Sortable.min.js"></script>
+<script src="/vendor/chartjs/chart.umd.js"></script>
+<script src="/static/admin.js"></script>
+</body>
+</html>

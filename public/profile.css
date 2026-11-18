@@ -1,0 +1,50 @@
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:var(--font);color:var(--text);-webkit-font-smoothing:antialiased}
+.bg{position:fixed;inset:0;z-index:-1}
+.wrap{max-width:680px;margin:0 auto;padding:56px 18px 32px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;margin-bottom:14px}
+.avatar.ini,.ini{display:grid;place-items:center;background:rgba(0,0,0,.12);color:var(--text);font-weight:700;font-size:34px}
+.ini.sm{width:44px;height:44px;border-radius:50%;font-size:16px;flex:none}
+.name{font-size:20px;font-weight:700;margin:0 0 6px}
+.bio{margin:0 0 16px;font-size:15px;line-height:1.45;opacity:.9;max-width:520px;white-space:pre-line}
+.socials{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:4px 0 22px}
+.soc{color:var(--text);text-decoration:none;font-size:24px;width:42px;height:42px;display:grid;place-items:center;border-radius:50%;transition:transform .15s}
+.soc:hover{transform:scale(1.15)}
+.links{width:100%;display:flex;flex-direction:column;gap:14px;margin-bottom:24px}
+.hdr{font-size:16px;font-weight:700;margin:14px 0 0}
+.lk{position:relative;display:flex;align-items:center;justify-content:center;min-height:58px;padding:14px 56px;text-decoration:none;font-weight:600;font-size:15.5px;line-height:1.3;transition:transform .15s ease,background .15s,color .15s;word-break:break-word}
+.lk .th{position:absolute;left:8px;top:50%;transform:translateY(-50%);width:42px;height:42px;object-fit:cover}
+.lk img.th{border-radius:min(var(--radius),50%)}
+.lk .th.em{display:grid;place-items:center;font-size:24px;border-radius:0}
+.lk .dots{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:20px;opacity:.55}
+.lk .dots:hover{opacity:1;background:rgba(0,0,0,.08)}
+.empty{opacity:.6}
+footer{margin-top:24px}
+footer a{color:var(--text);opacity:.9;text-decoration:none;font-weight:700;font-size:14px;padding:8px 16px;border-radius:999px;background:rgba(127,127,127,.18);backdrop-filter:blur(6px)}
+.share-btn{position:fixed;top:14px;right:14px;width:42px;height:42px;border:0;background:rgba(255,255,255,.55);backdrop-filter:blur(8px);color:#111;font-size:16px;cursor:pointer;z-index:5;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+/* animasi */
+@keyframes shake{0%,90%,100%{transform:translateX(0)}92%{transform:translateX(-6px)}94%{transform:translateX(6px)}96%{transform:translateX(-4px)}98%{transform:translateX(4px)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes wobble{0%,85%,100%{transform:rotate(0)}88%{transform:rotate(-3deg)}92%{transform:rotate(3deg)}96%{transform:rotate(-2deg)}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--btn) 45%,transparent)}}
+.an-shake{animation:shake 3s infinite}
+.an-pulse{animation:pulse 1.6s infinite}
+.an-wobble{animation:wobble 3s infinite}
+.an-glow{animation:glow 1.8s infinite}
+/* modal bagikan */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20;font-family:Inter,system-ui,sans-serif;color:#111}
+@media(min-width:640px){.modal{align-items:center}}
+.modal[hidden]{display:none}
+.modal-card{position:relative;background:#fff;width:100%;max-width:420px;border-radius:24px 24px 0 0;padding:22px 20px 26px;animation:up .2s ease}
+@media(min-width:640px){.modal-card{border-radius:24px}}
+@keyframes up{from{transform:translateY(30px);opacity:0}}
+.modal-card h3{margin:0 0 14px;text-align:center;font-size:16px}
+.modal-card .x{position:absolute;right:14px;top:14px;border:0;background:#f1f1ef;width:32px;height:32px;border-radius:50%;cursor:pointer}
+.sh-head{display:flex;align-items:center;gap:12px;background:#f6f6f4;padding:12px;border-radius:16px;text-align:left}
+.sh-head img{width:44px;height:44px;border-radius:50%;object-fit:cover}
+.sh-head small{display:block;color:#666;word-break:break-all}
+.qr{display:block;width:180px;height:180px;margin:16px auto;border-radius:12px;border:1px solid #eee}
+.sh-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.modal-card .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1px solid #e5e5e3;background:#fff;color:#111;text-decoration:none;font:600 14px Inter,system-ui,sans-serif;cursor:pointer}
+.modal-card .btn:hover{background:#f6f6f4}

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Linkku — Satu tautan untuk semuanya</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/app.css">
+<style>
+  body{background:#f3f3f1}
+  .auth{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+  @media(max-width:900px){.auth{grid-template-columns:1fr}.hero{display:none!important}}
+  .side{display:flex;flex-direction:column;justify-content:center;padding:48px clamp(24px,7vw,96px);background:#fff}
+  .brand{font-weight:800;font-size:22px;margin-bottom:40px}
+  h1{font-size:clamp(28px,4vw,40px);line-height:1.1;margin:0 0 8px;letter-spacing:-.02em}
+  .sub{color:#666;margin:0 0 28px}
+  .tabs2{display:flex;gap:6px;background:#f3f3f1;padding:5px;border-radius:999px;margin-bottom:22px;width:max-content}
+  .tabs2 button{border:0;background:transparent;padding:9px 20px;border-radius:999px;font-weight:600;cursor:pointer;color:#555}
+  .tabs2 button.on{background:#fff;color:#111;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  form{display:flex;flex-direction:column;gap:12px;max-width:420px}
+  .prefix{display:flex;align-items:center;background:#f3f3f1;border-radius:12px;padding-left:14px;border:2px solid transparent}
+  .prefix:focus-within{border-color:#111;background:#fff}
+  .prefix span{color:#888;white-space:nowrap;font-size:14px}
+  .prefix input{background:transparent;border:0!important;padding-left:2px}
+  .hint{font-size:13px;min-height:16px;color:#888}
+  .hint.ok{color:#16a34a}.hint.bad{color:#dc2626}
+  .err{color:#dc2626;font-size:14px;min-height:18px}
+  .hero{background:linear-gradient(160deg,#7c3aed,#c026d3 60%,#f97316);display:grid;place-items:center;padding:40px;position:relative;overflow:hidden}
+  .phone{width:300px;background:#0b3d91;border-radius:40px;padding:40px 20px;box-shadow:0 30px 80px rgba(0,0,0,.35);color:#fff;text-align:center;border:8px solid #111}
+  .phone .av{width:72px;height:72px;border-radius:50%;background:#f7941d;margin:0 auto 10px;display:grid;place-items:center;font-weight:800;font-size:24px}
+  .phone .b{background:#f7941d;border-radius:12px;padding:13px;margin-top:10px;font-weight:600;font-size:14px}
+</style>
+</head>
+<body>
+<div class="auth">
+  <section class="side">
+    <div class="brand">⚡ Linkku</div>
+    <h1 id="hTitle">Selamat datang kembali</h1>
+    <p class="sub" id="hSub">Masuk untuk mengelola halaman tautanmu.</p>
+    <div class="tabs2"><button class="on" data-m="login">Masuk</button><button data-m="register">Daftar</button></div>
+
+    <form id="fLogin">
+      <input class="inp" name="username" placeholder="Username atau email" autocomplete="username" required>
+      <input class="inp" name="password" type="password" placeholder="Kata sandi" autocomplete="current-password" required>
+      <div class="err"></div>
+      <button class="btn primary lg">Masuk</button>
+    </form>
+
+    <form id="fRegister" hidden>
+      <div class="prefix"><span id="host">linkku/</span><input class="inp" name="username" placeholder="username" autocomplete="off" required></div>
+      <div class="hint" id="uHint">Huruf kecil, angka, titik, minus, garis bawah.</div>
+      <input class="inp" name="displayName" placeholder="Nama tampilan (mis. Bill Zalukhu)">
+      <input class="inp" name="email" type="email" placeholder="Email" autocomplete="email" required>
+      <input class="inp" name="password" type="password" placeholder="Kata sandi (min. 6 karakter)" autocomplete="new-password" required>
+      <input class="inp" name="code" id="codeInp" placeholder="Kode undangan" hidden>
+      <div class="err"></div>
+      <button class="btn primary lg">Buat akun</button>
+    </form>
+  </section>
+  <section class="hero">
+    <div class="phone">
+      <div class="av">BPS</div>
+      <b>Tim Menuju BPS Pusat</b>
+      <div style="opacity:.85;font-size:13px;margin-top:4px">Semua tautan penting di satu tempat</div>
+      <div class="b">📁 Folder Dokumen</div>
+      <div class="b">📝 Form Pendaftaran</div>
+      <div class="b">📅 Jadwal & Agenda</div>
+      <div class="b">💬 Grup WhatsApp</div>
+    </div>
+  </section>
+</div>
+<script>
+(async () => {
+  const me = await fetch('/api/me');
+  if (me.ok) return location.replace('/admin');
+  const meta = await (await fetch('/api/meta')).json();
+  document.getElementById('host').textContent = meta.origin.replace(/^https?:\/\//, '') + '/';
+  if (meta.needCode) { const c = document.getElementById('codeInp'); c.hidden = false; c.required = true; }
+
+  const fL = document.getElementById('fLogin'), fR = document.getElementById('fRegister');
+  function mode(m) {
+    document.querySelectorAll('.tabs2 button').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+    fL.hidden = m !== 'login'; fR.hidden = m !== 'register';
+    document.getElementById('hTitle').textContent = m === 'login' ? 'Selamat datang kembali' : 'Buat halaman Linkku-mu';
+    document.getElementById('hSub').textContent = m === 'login' ? 'Masuk untuk mengelola halaman tautanmu.' : 'Gratis, cepat, dan siap dibagikan dalam 1 menit.';
+  }
+  document.querySelectorAll('.tabs2 button').forEach(b => b.onclick = () => mode(b.dataset.m));
+  if (location.hash === '#daftar') mode('register');
+
+  let t;
+  fR.username.addEventListener('input', () => {
+    fR.username.value = fR.username.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
+    clearTimeout(t);
+    const h = document.getElementById('uHint');
+    t = setTimeout(async () => {
+      const u = fR.username.value; if (!u) return;
+      const r = await (await fetch('/api/username-available?u=' + encodeURIComponent(u))).json();
+      h.className = 'hint ' + (r.available ? 'ok' : 'bad');
+      h.textContent = r.available ? '✓ Username tersedia' : (r.valid ? '✗ Username sudah dipakai' : '✗ Format username tidak valid / dicadangkan');
+    }, 300);
+  });
+
+  async function submit(form, url) {
+    const err = form.querySelector('.err'); err.textContent = '';
+    const btn = form.querySelector('button'); btn.disabled = true;
+    const body = Object.fromEntries(new FormData(form));
+    const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({}));
+    btn.disabled = false;
+    if (!r.ok) return err.textContent = j.error || 'Gagal.';
+    location.href = '/admin';
+  }
+  fL.onsubmit = e => { e.preventDefault(); submit(fL, '/api/auth/login'); };
+  fR.onsubmit = e => { e.preventDefault(); submit(fR, '/api/auth/register'); };
+})();
+</script>
+</body>
+</html>
